@@ -184,6 +184,6 @@ plugins = [
     "ecoitems",         # EcoÍtems
     "blocklocker",      # BlockLocker
     "skript",           # Skript
-    "iris",             # Iris World Generator
+    # "iris",             # Iris World Generator — TODO: restaurar quando Iris publicar artefatos (JitPack build falha)
     "score",            # ExecutableItems (SCore)
 ]
