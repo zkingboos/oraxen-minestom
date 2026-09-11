@@ -128,6 +128,8 @@ dependencies {
         exclude("net.kyori")
     }
     compileOnly(files("libs/compile/BSP.jar"))
+    // core module (neutral logic + contracts)
+    implementation(project(":oraxen-core"))
     // shaded dependencies
     implementation(oraxenLibs.bundles.libraries.shade) {
         exclude("com.google.code.gson", "gson")
