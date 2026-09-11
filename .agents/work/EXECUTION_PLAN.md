@@ -7,7 +7,7 @@ Documento fonte da verdade. O log vivo fica em `MINESTOM_PORT_STATUS.md`.
 - **`oraxen-minestom` = build de servidor próprio** (`main()` + `MinecraftServer.init()`), NÃO um plugin/Extension de terceiros.
 - **Escopo do core (primeira iteração)**: máximo = pack + scheduler + evento + item (config spine dobrado no item).
 - **Extração por mesmo FQCN** (`io.th0rgal.oraxen.*`), sem JPMS; remover a original do bukkit no mesmo commit.
-- **Fork adiado**: `origin` continua apontando para `oraxen/oraxen`; branch de trabalho `minestom`.
+- **Fork criado**: `origin` → `zkingboos/oraxen-minestom` (branch `main`); `upstream` → `oraxen/oraxen`.
 - **Sem `agent_collaboration`**: progresso num único arquivo canônico.
 - **Licença sinalizada**, sem decisão: fork Minestom redistribuído pode esbarrar na licença do Oraxen.
 

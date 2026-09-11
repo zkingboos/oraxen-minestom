@@ -10,8 +10,7 @@ Executar quando o usuário fizer `git pull` (ou pedir sync com o upstream).
 ## Passos
 
 1. `git fetch upstream` e identificar o range a mesclar.
-2. Merge na branch `minestom` (nunca `master`; não fazer `git pull` cego sobre `origin`, que hoje aponta para `oraxen/oraxen`).
-   - Enquanto não houver fork: apenas registrar o diff, **não mesclar** diretamente na `master`.
+2. Merge na branch `main` da branch `upstream/master` (nunca `git pull` cego sobre `origin`, que é o fork `zkingboos/oraxen-minestom`).
 3. `git diff --name-only upstream/master..HEAD` → classificar cada arquivo tocado em:
    - **(a) puro** → reavaliar extração para `oraxen-core` (ver `architecture_modules.md`);
    - **(b) bukkit-typed** → verificar se há espelho/porta em `oraxen-minestom`;

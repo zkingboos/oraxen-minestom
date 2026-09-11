@@ -6,10 +6,14 @@ trigger: always_on
 
 # Merge com o upstream Oraxen
 
+## Remotes (atual)
+- **`origin`** → fork `zkingboos/oraxen-minestom` (branch padrão `main`).
+- **`upstream`** → `oraxen/oraxen` (branch padrão `master`).
+
 ## Regras estruturais
-- Nunca desenvolver direto na `master`. Trabalhar na branch `minestom` (ou feature off dela).
-- Atualmente só existe `origin` apontando para `oraxen/oraxen` (fork ficou adiado). Enquanto não houver fork, **não fazer `git pull` cego** sobre `origin`.
-- Quando o fork existir: `git fetch upstream && git merge upstream/master` na branch `minestom`.
+- Nunca desenvolver direto na `main` do fork. Trabalhar em feature branch off de `main` (ou na `main` apenas para receber merge do upstream).
+- Sync com o upstream: `git fetch upstream && git merge upstream/master` na branch `main`.
+- **Não fazer `git pull` cego** sobre `origin` (que é o seu fork); o pull #de upstream# é sempre via `upstream/master`.
 
 ## Re-port obrigatório
 - Toda mudança upstream que toca código já portado exige re-aplicar a adaptação em `oraxen-minestom` no **mesmo commit/PR**.

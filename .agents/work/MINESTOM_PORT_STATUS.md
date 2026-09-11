@@ -4,7 +4,7 @@ Log vivo de progresso. Fonte da verdade do plano: `EXECUTION_PLAN.md`.
 
 ## Metadata
 - **Base upstream SHA**: `83e87161` (master)
-- **Branch de trabalho**: `minestom`
+- **Branch de trabalho**: `main` (fork `zkingboos/oraxen-minestom`)
 - **Início**: 2026-09-07
 
 ## Tarefas
