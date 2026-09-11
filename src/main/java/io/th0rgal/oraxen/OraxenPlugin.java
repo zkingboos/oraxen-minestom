@@ -34,6 +34,7 @@ import io.th0rgal.oraxen.recipes.RecipesManager;
 import io.th0rgal.oraxen.sounds.CustomJukeboxSongRegistry;
 import io.th0rgal.oraxen.sounds.SoundManager;
 import io.th0rgal.oraxen.utils.*;
+import io.th0rgal.oraxen.utils.BukkitSchedulerAdapter;
 import io.th0rgal.oraxen.utils.SchedulerUtil;
 import io.th0rgal.oraxen.utils.actions.ClickActionManager;
 import io.th0rgal.oraxen.utils.armorequipevent.ArmorEquipEvent;
@@ -108,6 +109,7 @@ public class OraxenPlugin extends JavaPlugin {
         clickActionManager = new ClickActionManager(this);
         supportsDisplayEntities = VersionUtil.atOrAbove("1.19.4");
         reloadConfigs();
+        BukkitSchedulerAdapter.register();
         AntiGriefLib.setDebug(Settings.DEBUG.toBool());
         AntiGriefLib.init(this);
 
