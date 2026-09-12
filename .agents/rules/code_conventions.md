@@ -18,3 +18,9 @@ trigger: always_on
 ## Idioma e estilo
 - Comentários em inglês (o codebase Oraxen é inglês), consistentes por arquivo.
 - Seguir o estilo do arquivo vizinho; não introduzir nova lib sem justificativa no commit.
+
+## Imports e qualificação de tipos
+- Proibido usar FQCN inline no corpo do código (ex: `new java.util.ArrayList<>()`, `java.util.List<...>`, `net.minestom.server...Foo`).
+  Todo tipo referenciado fora de `import` deve vir de um `import` no topo do arquivo — exceto quando há colisão de nome simples
+  no mesmo arquivo, caso em que se qualifica apenas o necessário (ex: `SchedulerUtil.ScheduledTask`, não o FQCN completo).
+- Imports não usados devem ser removidos (ver "Dead code").

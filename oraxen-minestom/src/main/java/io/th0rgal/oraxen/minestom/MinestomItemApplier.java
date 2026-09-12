@@ -1,22 +1,34 @@
 package io.th0rgal.oraxen.minestom;
 
 import io.th0rgal.oraxen.core.items.AttributeModifierEntry;
+import io.th0rgal.oraxen.core.items.ConsumableComponent;
+import io.th0rgal.oraxen.core.items.ConsumeEffectGroup;
 import io.th0rgal.oraxen.core.items.FoodComponent;
 import io.th0rgal.oraxen.core.items.OraxenItem;
+import io.th0rgal.oraxen.core.items.PotionEffectEntry;
 import net.kyori.adventure.key.Key;
 import net.minestom.server.component.DataComponents;
 import net.minestom.server.entity.EquipmentSlotGroup;
 import net.minestom.server.entity.attribute.Attribute;
 import net.minestom.server.entity.attribute.AttributeModifier;
 import net.minestom.server.entity.attribute.AttributeOperation;
+import net.minestom.server.item.ItemAnimation;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.component.AttributeList;
+import net.minestom.server.item.component.Consumable;
+import net.minestom.server.item.component.ConsumeEffect;
 import net.minestom.server.item.component.EnchantmentList;
 import net.minestom.server.item.component.Food;
 import net.minestom.server.item.enchant.Enchantment;
+import net.minestom.server.potion.CustomPotionEffect;
+import net.minestom.server.potion.PotionEffect;
 import net.minestom.server.registry.RegistryKey;
+import net.minestom.server.sound.SoundEvent;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -40,16 +52,15 @@ final class MinestomItemApplier {
         if (enchantments == null || enchantments.isEmpty()) return;
         Map<RegistryKey<Enchantment>, Integer> map = new LinkedHashMap<>();
         for (Map.Entry<String, Integer> e : enchantments.entrySet()) {
-            RegistryKey<Enchantment> key = RegistryKey.unsafeOf("minecraft:" + e.getKey().toLowerCase(java.util.Locale.ROOT));
+            RegistryKey<Enchantment> key = RegistryKey.unsafeOf("minecraft:" + e.getKey().toLowerCase(Locale.ROOT));
             map.put(key, e.getValue());
         }
         builder.set(DataComponents.ENCHANTMENTS, new EnchantmentList(map));
     }
 
-    private static void applyAttributeModifiers(ItemStack.Builder builder,
-                                                java.util.List<AttributeModifierEntry> modifiers) {
+    private static void applyAttributeModifiers(ItemStack.Builder builder, List<AttributeModifierEntry> modifiers) {
         if (modifiers == null || modifiers.isEmpty()) return;
-        java.util.List<AttributeList.Modifier> list = new java.util.ArrayList<>();
+        List<AttributeList.Modifier> list = new ArrayList<>();
         int i = 0;
         for (AttributeModifierEntry entry : modifiers) {
             Attribute attribute = Attribute.fromKey(attributeKey(entry.attribute()));
@@ -71,31 +82,29 @@ final class MinestomItemApplier {
         builder.set(DataComponents.FOOD, new Food(food.nutrition(), food.saturation(), food.canAlwaysEat()));
     }
 
-    private static void applyConsumable(ItemStack.Builder builder,
-                                        io.th0rgal.oraxen.core.items.ConsumableComponent consumable) {
+    private static void applyConsumable(ItemStack.Builder builder, ConsumableComponent consumable) {
         if (consumable == null) return;
 
-        net.minestom.server.item.ItemAnimation animation = animation(consumable.animation());
-        net.minestom.server.sound.SoundEvent sound = net.minestom.server.sound.SoundEvent.fromKey(soundKey(consumable.sound()));
+        ItemAnimation animation = animation(consumable.animation());
+        SoundEvent sound = SoundEvent.fromKey(soundKey(consumable.sound()));
         if (sound == null) {
-            sound = net.minestom.server.sound.SoundEvent.fromKey("minecraft:entity.generic.eat");
+            sound = SoundEvent.fromKey("minecraft:entity.generic.eat");
         }
 
-        java.util.List<net.minestom.server.item.component.ConsumeEffect> effects = new java.util.ArrayList<>();
+        List<ConsumeEffect> effects = new ArrayList<>();
         if (consumable.consumeEffects() != null) {
-            for (io.th0rgal.oraxen.core.items.ConsumeEffectGroup group : consumable.consumeEffects()) {
+            for (ConsumeEffectGroup group : consumable.consumeEffects()) {
                 if ("apply_effects".equals(group.type()) && group.effects() != null) {
-                    java.util.List<net.minestom.server.potion.CustomPotionEffect> potionEffects = new java.util.ArrayList<>();
-                    for (java.util.Map.Entry<String, io.th0rgal.oraxen.core.items.PotionEffectEntry> e : group.effects().entrySet()) {
-                        net.minestom.server.potion.PotionEffect pe = net.minestom.server.potion.PotionEffect.fromKey(e.getKey());
+                    List<CustomPotionEffect> potionEffects = new ArrayList<>();
+                    for (Map.Entry<String, PotionEffectEntry> e : group.effects().entrySet()) {
+                        PotionEffect pe = PotionEffect.fromKey(e.getKey());
                         if (pe == null) continue;
-                        io.th0rgal.oraxen.core.items.PotionEffectEntry s = e.getValue();
-                        potionEffects.add(new net.minestom.server.potion.CustomPotionEffect(
+                        PotionEffectEntry s = e.getValue();
+                        potionEffects.add(new CustomPotionEffect(
                                 pe, s.amplifier(), s.duration(), s.ambient(), s.showParticles(), s.showIcon()));
                     }
                     if (!potionEffects.isEmpty()) {
-                        effects.add(new net.minestom.server.item.component.ConsumeEffect.ApplyEffects(
-                                potionEffects, group.probability()));
+                        effects.add(new ConsumeEffect.ApplyEffects(potionEffects, group.probability()));
                     }
                 }
                 // TODO: clear_all_effects, play_sound, teleport_randomly consume effect types.
@@ -103,16 +112,15 @@ final class MinestomItemApplier {
         }
 
         builder.set(DataComponents.CONSUMABLE,
-                new net.minestom.server.item.component.Consumable(
-                        consumable.consumeSeconds(), animation, sound, consumable.hasConsumeParticles(), effects));
+                new Consumable(consumable.consumeSeconds(), animation, sound, consumable.hasConsumeParticles(), effects));
     }
 
-    private static net.minestom.server.item.ItemAnimation animation(String name) {
-        if (name == null) return net.minestom.server.item.ItemAnimation.NONE;
-        return switch (name.toLowerCase(java.util.Locale.ROOT)) {
-            case "eat" -> net.minestom.server.item.ItemAnimation.EAT;
-            case "drink" -> net.minestom.server.item.ItemAnimation.DRINK;
-            default -> net.minestom.server.item.ItemAnimation.NONE;
+    private static ItemAnimation animation(String name) {
+        if (name == null) return ItemAnimation.NONE;
+        return switch (name.toLowerCase(Locale.ROOT)) {
+            case "eat" -> ItemAnimation.EAT;
+            case "drink" -> ItemAnimation.DRINK;
+            default -> ItemAnimation.NONE;
         };
     }
 
@@ -121,13 +129,13 @@ final class MinestomItemApplier {
     }
 
     private static String attributeKey(String bukkitName) {
-        String normalized = bukkitName.toLowerCase(java.util.Locale.ROOT).replace("generic_", "");
+        String normalized = bukkitName.toLowerCase(Locale.ROOT).replace("generic_", "");
         return "minecraft:" + normalized;
     }
 
     private static EquipmentSlotGroup slotGroup(String slot) {
         if (slot == null) return EquipmentSlotGroup.MAIN_HAND;
-        return switch (slot.toUpperCase(java.util.Locale.ROOT)) {
+        return switch (slot.toUpperCase(Locale.ROOT)) {
             case "HAND", "MAIN_HAND" -> EquipmentSlotGroup.MAIN_HAND;
             case "OFF_HAND" -> EquipmentSlotGroup.OFF_HAND;
             case "FEET" -> EquipmentSlotGroup.FEET;

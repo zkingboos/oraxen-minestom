@@ -157,7 +157,7 @@ public final class BukkitSchedulerAdapter implements OraxenScheduler {
         return SchedulerUtil.isGlobalThread();
     }
 
-    private static ScheduledTask wrap(io.th0rgal.oraxen.utils.SchedulerUtil.ScheduledTask task) {
+    private static ScheduledTask wrap(SchedulerUtil.ScheduledTask task) {
         return new BukkitScheduledTask(task);
     }
 
@@ -165,9 +165,9 @@ public final class BukkitSchedulerAdapter implements OraxenScheduler {
      * Adapter wrapping SchedulerUtil.ScheduledTask to implement the core ScheduledTask interface.
      */
     private static final class BukkitScheduledTask implements ScheduledTask {
-        private final io.th0rgal.oraxen.utils.SchedulerUtil.ScheduledTask delegate;
+        private final SchedulerUtil.ScheduledTask delegate;
 
-        BukkitScheduledTask(io.th0rgal.oraxen.utils.SchedulerUtil.ScheduledTask delegate) {
+        BukkitScheduledTask(SchedulerUtil.ScheduledTask delegate) {
             this.delegate = delegate;
         }
 
